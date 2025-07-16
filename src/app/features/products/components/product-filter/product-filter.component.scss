@@ -1,0 +1,189 @@
+.filter-card {
+  position: sticky;
+  top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ecf0f1;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #2c3e50;
+      font-size: 1.2rem;
+      font-weight: 600;
+
+      mat-icon {
+        color: #3498db;
+      }
+    }
+
+    .clear-filters {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.9rem;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 20px 16px;
+
+    .filter-form {
+      .filter-section {
+        margin-bottom: 20px;
+
+        h4 {
+          color: #34495e;
+          font-size: 0.9rem;
+          font-weight: 600;
+          margin: 0 0 12px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .full-width {
+          width: 100%;
+        }
+
+        // Price Range Styling
+        .price-inputs {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          mat-form-field {
+            flex: 1;
+          }
+
+          .price-separator {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding: 0 4px;
+          }
+        }
+
+        // Color Option Styling
+        .color-option {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .color-swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #ecf0f1;
+          }
+        }
+
+        // Stock Checkbox Styling
+        .stock-checkbox {
+          color: #34495e;
+          
+          ::ng-deep .mat-checkbox-label {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Form Field Customization
+::ng-deep {
+  .filter-card {
+    .mat-form-field {
+      .mat-form-field-outline {
+        color: #bdc3c7;
+      }
+
+      &.mat-focused {
+        .mat-form-field-outline-thick {
+          color: #3498db;
+        }
+      }
+
+      .mat-form-field-label {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+      }
+
+      &.mat-focused .mat-form-field-label {
+        color: #3498db;
+      }
+
+      .mat-form-field-suffix mat-icon {
+        color: #7f8c8d;
+        font-size: 18px;
+      }
+    }
+
+    .mat-select-panel {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .mat-option {
+      font-size: 0.9rem;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      &.mat-selected {
+        background-color: #3498db;
+        color: white;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .filter-card {
+    position: static;
+    margin-bottom: 20px;
+
+    mat-card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+
+      .clear-filters {
+        align-self: flex-end;
+      }
+    }
+
+    mat-card-content {
+      padding: 16px 12px;
+
+      .filter-form {
+        .filter-section {
+          margin-bottom: 16px;
+
+          .price-inputs {
+            flex-direction: column;
+            gap: 12px;
+
+            .price-separator {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

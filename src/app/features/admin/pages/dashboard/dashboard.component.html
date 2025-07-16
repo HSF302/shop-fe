@@ -1,0 +1,148 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the administration panel</p>
+  </div>
+
+  <div class="dashboard-content" *ngIf="stats$ | async as stats">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card products-card" (click)="navigateToProducts()">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon">
+              <mat-icon>inventory_2</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.totalProducts }}</h3>
+              <p>Total Products</p>
+            </div>
+          </div>
+          <div class="stat-action">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card orders-card" (click)="navigateToOrders()">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon">
+              <mat-icon>shopping_cart</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.totalOrders }}</h3>
+              <p>Total Orders</p>
+            </div>
+          </div>
+          <div class="stat-action">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card users-card" (click)="navigateToUsers()">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon">
+              <mat-icon>people</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.totalUsers }}</h3>
+              <p>Total Users</p>
+            </div>
+          </div>
+          <div class="stat-action">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card revenue-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ formatCurrency(stats.totalRevenue) }}</h3>
+              <p>Total Revenue</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Alert Cards -->
+    <div class="alerts-section">
+      <h2>Alerts & Notifications</h2>
+      <div class="alerts-grid">
+        <mat-card class="alert-card pending-orders" *ngIf="stats.pendingOrders > 0">
+          <mat-card-content>
+            <div class="alert-content">
+              <mat-icon class="alert-icon">notification_important</mat-icon>
+              <div class="alert-info">
+                <h4>{{ stats.pendingOrders }} Pending Orders</h4>
+                <p>Orders waiting for confirmation</p>
+              </div>
+              <button mat-raised-button color="primary" (click)="navigateToOrders()">
+                View Orders
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="alert-card low-stock" *ngIf="stats.lowStockProducts > 0">
+          <mat-card-content>
+            <div class="alert-content">
+              <mat-icon class="alert-icon">warning</mat-icon>
+              <div class="alert-info">
+                <h4>{{ stats.lowStockProducts }} Low Stock Items</h4>
+                <p>Products with less than 5 items in stock</p>
+              </div>
+              <button mat-raised-button color="warn" (click)="navigateToProducts()">
+                Manage Stock
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+      <h2>Quick Actions</h2>
+      <div class="actions-grid">
+        <mat-card class="action-card" (click)="navigateToProducts()">
+          <mat-card-content>
+            <mat-icon>add_box</mat-icon>
+            <h4>Add New Product</h4>
+            <p>Create a new product listing</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="navigateToOrders()">
+          <mat-card-content>
+            <mat-icon>assignment</mat-icon>
+            <h4>Manage Orders</h4>
+            <p>View and update order status</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="navigateToUsers()">
+          <mat-card-content>
+            <mat-icon>person_add</mat-icon>
+            <h4>User Management</h4>
+            <p>Manage user accounts and roles</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Loading dashboard...</p>
+  </div>
+</div>

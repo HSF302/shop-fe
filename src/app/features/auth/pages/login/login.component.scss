@@ -1,0 +1,209 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+    mat-card-header {
+      text-align: center;
+      padding-bottom: 20px;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 8px;
+
+        mat-icon {
+          font-size: 2rem;
+          width: 2rem;
+          height: 2rem;
+          color: #3498db;
+        }
+      }
+
+      mat-card-subtitle {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+      }
+    }
+
+    mat-card-content {
+      padding: 0 24px 20px;
+
+      .login-form {
+        .full-width {
+          width: 100%;
+          margin-bottom: 16px;
+        }
+
+        .error-message {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #e74c3c;
+          font-size: 0.9rem;
+          margin-bottom: 16px;
+          padding: 12px;
+          background-color: #fdf2f2;
+          border-radius: 8px;
+          border-left: 4px solid #e74c3c;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+
+        .login-button {
+          height: 48px;
+          font-size: 1rem;
+          font-weight: 600;
+          border-radius: 8px;
+          position: relative;
+
+          .button-spinner {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+
+    mat-card-actions {
+      padding: 0 24px 24px;
+
+      .action-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+
+        .forgot-password-link {
+          font-size: 0.9rem;
+          text-decoration: underline;
+        }
+      }
+
+      .register-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding-top: 16px;
+        border-top: 1px solid #ecf0f1;
+
+        .register-text {
+          color: #7f8c8d;
+          font-size: 0.9rem;
+        }
+
+        .register-link {
+          font-weight: 600;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .demo-info {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.95);
+
+    mat-card-header {
+      text-align: center;
+
+      mat-card-title {
+        font-size: 1.1rem;
+        color: #34495e;
+      }
+    }
+
+    mat-card-content {
+      .demo-account {
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: #2c3e50;
+
+        strong {
+          color: #3498db;
+        }
+      }
+    }
+  }
+}
+
+// Form field customization
+::ng-deep {
+  .login-container {
+    .mat-form-field {
+      .mat-form-field-outline {
+        color: #bdc3c7;
+      }
+
+      &.mat-focused {
+        .mat-form-field-outline-thick {
+          color: #3498db;
+        }
+      }
+
+      .mat-form-field-label {
+        color: #7f8c8d;
+      }
+
+      &.mat-focused .mat-form-field-label {
+        color: #3498db;
+      }
+
+      .mat-form-field-suffix mat-icon {
+        color: #7f8c8d;
+      }
+    }
+
+    .mat-raised-button {
+      &.mat-primary {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        
+        &:hover {
+          background: linear-gradient(45deg, #2980b9, #21618c);
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+
+    .login-card,
+    .demo-info {
+      max-width: 100%;
+    }
+
+    .login-card {
+      mat-card-content {
+        padding: 0 16px 16px;
+      }
+
+      mat-card-actions {
+        padding: 0 16px 16px;
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+<mat-card class="filter-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>filter_list</mat-icon>
+      Filters
+    </mat-card-title>
+    <button 
+      *ngIf="hasActiveFilters()" 
+      mat-button 
+      color="warn" 
+      (click)="clearFilters()"
+      class="clear-filters">
+      <mat-icon>clear</mat-icon>
+      Clear All
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="filterForm" class="filter-form">
+      
+      <!-- Search -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Search Products</mat-label>
+          <input matInput formControlName="search" placeholder="Enter product name or description">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Category -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            <mat-option value="">All Categories</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>category</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Brand -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Brand</mat-label>
+          <mat-select formControlName="brand">
+            <mat-option value="">All Brands</mat-option>
+            <mat-option *ngFor="let brand of brands" [value]="brand">
+              {{ brand }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Price Range -->
+      <div class="filter-section">
+        <h4>Price Range</h4>
+        <div class="price-inputs">
+          <mat-form-field appearance="outline">
+            <mat-label>Min Price</mat-label>
+            <input matInput type="number" formControlName="minPrice" placeholder="0">
+            <span matPrefix>$</span>
+          </mat-form-field>
+          
+          <span class="price-separator">to</span>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Max Price</mat-label>
+            <input matInput type="number" formControlName="maxPrice" placeholder="1000">
+            <span matPrefix>$</span>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Size -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Size</mat-label>
+          <mat-select formControlName="size">
+            <mat-option value="">All Sizes</mat-option>
+            <mat-option *ngFor="let size of sizes" [value]="size">
+              {{ size }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>straighten</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Color -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Color</mat-label>
+          <mat-select formControlName="color">
+            <mat-option value="">All Colors</mat-option>
+            <mat-option *ngFor="let color of colors" [value]="color">
+              <div class="color-option">
+                <div class="color-swatch" [style.background-color]="color.toLowerCase()"></div>
+                {{ color }}
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>palette</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Material -->
+      <div class="filter-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Material</mat-label>
+          <mat-select formControlName="material">
+            <mat-option value="">All Materials</mat-option>
+            <mat-option *ngFor="let material of materials" [value]="material">
+              {{ material }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>texture</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- In Stock Only -->
+      <div class="filter-section">
+        <mat-checkbox formControlName="inStock" class="stock-checkbox">
+          Show only in-stock items
+        </mat-checkbox>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

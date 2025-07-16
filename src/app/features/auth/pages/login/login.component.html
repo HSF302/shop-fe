@@ -1,0 +1,119 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>account_circle</mat-icon>
+        Sign In
+      </mat-card-title>
+      <mat-card-subtitle>
+        Welcome back to Office Dress Shop
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input 
+            matInput 
+            type="email" 
+            formControlName="email"
+            placeholder="Enter your email"
+            autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            {{ getEmailErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            {{ getPasswordErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Error Message -->
+        <div *ngIf="error$ | async as error" class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          class="login-button full-width"
+          [disabled]="loginForm.invalid || (loading$ | async)">
+          
+          <mat-spinner 
+            *ngIf="loading$ | async" 
+            diameter="20" 
+            class="button-spinner">
+          </mat-spinner>
+          
+          <span *ngIf="!(loading$ | async)">Sign In</span>
+          <span *ngIf="loading$ | async">Signing In...</span>
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="login-actions">
+      <div class="action-links">
+        <button 
+          mat-button 
+          color="primary" 
+          (click)="goToForgotPassword()"
+          class="forgot-password-link">
+          Forgot Password?
+        </button>
+      </div>
+      
+      <div class="register-section">
+        <span class="register-text">Don't have an account?</span>
+        <button 
+          mat-button 
+          color="accent" 
+          (click)="goToRegister()"
+          class="register-link">
+          Sign Up
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Demo Accounts Info -->
+  <mat-card class="demo-info">
+    <mat-card-header>
+      <mat-card-title>Demo Accounts</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="demo-account">
+        <strong>Admin:</strong> admin&#64;com / 123456
+      </div>
+      <div class="demo-account">
+        <strong>Customer:</strong> john.doe&#64;com / 123456
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,199 @@
+<div class="product-detail-container" *ngIf="product$ | async as product">
+  
+  <!-- Back Button -->
+  <div class="back-section">
+    <button mat-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Products
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading product details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <h3>Error Loading Product</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      Go Back
+    </button>
+  </div>
+
+  <!-- Product Content -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="product-content">
+    
+    <!-- Product Images -->
+    <div class="product-images">
+      <div class="main-image">
+        <img
+          [src]="product.imageUrl || '/assets/images/placeholder-dress.jpg'"
+          [alt]="product.name"
+          (error)="onImageError($event)">
+      </div>
+    </div>
+
+    <!-- Product Information -->
+    <div class="product-info">
+      
+      <!-- Basic Info -->
+      <div class="basic-info">
+        <div class="brand-badge">{{ product.brand }}</div>
+        <h1 class="product-name">{{ product.name }}</h1>
+        <p class="product-description">{{ product.description }}</p>
+        
+        <div class="price-section">
+          <span class="base-price">{{ getFormattedPrice(product.basePrice) }}</span>
+          <span class="price-note">Base price (additional costs may apply)</span>
+        </div>
+
+        <div class="stock-info" [ngClass]="isInStock(product) ? 'in-stock' : 'out-of-stock'">
+          <mat-icon>{{ isInStock(product) ? 'check_circle' : 'cancel' }}</mat-icon>
+          <span>{{ getStockStatus(product) }}</span>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="product-details">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Product Details</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="detail-item">
+              <strong>SKU:</strong> {{ product.sku }}
+            </div>
+            <div class="detail-item">
+              <strong>Category:</strong> {{ product.category.name }}
+            </div>
+            <div class="detail-item" *ngIf="product.careInstructions">
+              <strong>Care Instructions:</strong> {{ product.careInstructions }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Add to Cart Form -->
+      <div class="add-to-cart-section" *ngIf="isInStock(product)">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Customize Your Order</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="addToCartForm" class="cart-form">
+              
+              <!-- Size Selection -->
+              <div class="form-section" *ngIf="product.sizes?.length">
+                <label>Size *</label>
+                <mat-radio-group formControlName="size" class="size-options">
+                  <mat-radio-button 
+                    *ngFor="let size of product.sizes" 
+                    [value]="size.id"
+                    class="size-option">
+                    <div class="option-content">
+                      <span class="option-name">{{ size.name }}</span>
+                      <span class="option-price" *ngIf="size.additionalPrice > 0">
+                        +{{ getFormattedPrice(size.additionalPrice) }}
+                      </span>
+                    </div>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <!-- Color Selection -->
+              <div class="form-section" *ngIf="product.colors?.length">
+                <label>Color *</label>
+                <mat-radio-group formControlName="color" class="color-options">
+                  <mat-radio-button 
+                    *ngFor="let color of product.colors" 
+                    [value]="color.id"
+                    class="color-option">
+                    <div class="option-content">
+                      <div class="color-swatch" [style.background-color]="color.name.toLowerCase()"></div>
+                      <span class="option-name">{{ color.name }}</span>
+                      <span class="option-price" *ngIf="color.additionalPrice > 0">
+                        +{{ getFormattedPrice(color.additionalPrice) }}
+                      </span>
+                    </div>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <!-- Material Selection -->
+              <div class="form-section" *ngIf="product.materials?.length">
+                <label>Material *</label>
+                <mat-radio-group formControlName="material" class="material-options">
+                  <mat-radio-button 
+                    *ngFor="let material of product.materials" 
+                    [value]="material.id"
+                    class="material-option">
+                    <div class="option-content">
+                      <span class="option-name">{{ material.name }}</span>
+                      <span class="option-price" *ngIf="material.additionalPrice > 0">
+                        +{{ getFormattedPrice(material.additionalPrice) }}
+                      </span>
+                    </div>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <!-- Quantity -->
+              <div class="form-section">
+                <label>Quantity *</label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="number" formControlName="quantity" min="1" [max]="product.quantity">
+                </mat-form-field>
+              </div>
+
+              <!-- Total Price -->
+              <div class="total-price" *ngIf="addToCartForm.valid">
+                <h3>Total: {{ getFormattedPrice(calculateTotalPrice(product)) }}</h3>
+              </div>
+
+            </form>
+          </mat-card-content>
+          
+          <mat-card-actions>
+            <button 
+              mat-raised-button 
+              color="primary" 
+              (click)="onAddToCart()"
+              [disabled]="!addToCartForm.valid"
+              class="add-to-cart-btn">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Add to Cart
+            </button>
+            
+            <button 
+              mat-raised-button 
+              color="accent" 
+              (click)="onBuyNow()"
+              [disabled]="!addToCartForm.valid"
+              class="buy-now-btn">
+              <mat-icon>flash_on</mat-icon>
+              Buy Now
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <!-- Out of Stock Message -->
+      <div class="out-of-stock-section" *ngIf="!isInStock(product)">
+        <mat-card>
+          <mat-card-content>
+            <div class="out-of-stock-message">
+              <mat-icon color="warn">inventory_2</mat-icon>
+              <h3>Out of Stock</h3>
+              <p>This item is currently unavailable. Please check back later.</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+</div>

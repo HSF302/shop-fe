@@ -1,0 +1,61 @@
+<div class="product-list-container">
+  <div class="header">
+    <h1>Office Dress Collection</h1>
+    <p>Discover our professional and elegant office dress collection</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar">
+      <app-product-filter 
+        [filters]="filters$ | async"
+        (filtersChanged)="onFiltersChanged($event)">
+      </app-product-filter>
+    </aside>
+
+    <!-- Products Grid -->
+    <main class="products-main">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading$ | async" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="error$ | async as error" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="loadProducts()">
+          Try Again
+        </button>
+      </div>
+
+      <!-- Products Grid -->
+      <div *ngIf="!(loading$ | async) && !(error$ | async)" class="products-grid">
+        <app-product-card 
+          *ngFor="let product of products$ | async; trackBy: trackByProductId"
+          [product]="product"
+          [routerLink]="['/products', product.id]">
+        </app-product-card>
+
+        <!-- No Products Message -->
+        <div *ngIf="(products$ | async)?.length === 0" class="no-products">
+          <mat-icon>search_off</mat-icon>
+          <h3>No products found</h3>
+          <p>Try adjusting your filters or search criteria</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator 
+        *ngIf="(products$ | async)?.length > 0"
+        [length]="(totalPages$ | async) * 12"
+        [pageSize]="12"
+        [pageIndex]="currentPage$ | async"
+        [pageSizeOptions]="[12, 24, 48]"
+        (page)="onPageChanged($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </main>
+  </div>
+</div>

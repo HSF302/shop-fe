@@ -1,0 +1,103 @@
+.checkout-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.checkout-content h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-summary, .shipping-form {
+  height: fit-content;
+}
+
+.order-items {
+  margin-bottom: 20px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.item-info h4 {
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.item-info p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.item-price {
+  font-weight: 600;
+  color: #333;
+}
+
+.total-section {
+  padding-top: 15px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total-amount {
+  color: #2196f3;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}

@@ -1,0 +1,61 @@
+<mat-card class="order-summary-card">
+  <mat-card-header>
+    <mat-card-title>Order Summary</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="summary-section" *ngIf="cart && cart.items.length > 0">
+      <!-- Items Summary -->
+      <div class="items-summary">
+        <div class="summary-row" *ngFor="let item of cart.items">
+          <span class="item-name">{{ item.product.name }} ({{ item.quantity }}x)</span>
+          <span class="item-price">${{ item.totalPrice.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Price Breakdown -->
+      <div class="price-breakdown">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>${{ calculateSubtotal().toFixed(2) }}</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>Tax (10%):</span>
+          <span>${{ calculateTax().toFixed(2) }}</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span *ngIf="calculateShipping() === 0" class="free-shipping">FREE</span>
+          <span *ngIf="calculateShipping() > 0">${{ calculateShipping().toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Total -->
+      <div class="total-section">
+        <div class="summary-row total-row">
+          <span class="total-label">Total:</span>
+          <span class="total-amount">${{ calculateTotal().toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <!-- Checkout Button -->
+      <div class="checkout-section" *ngIf="showCheckoutButton">
+        <button mat-raised-button color="primary" class="checkout-button" 
+                (click)="onCheckout()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty Cart Message -->
+    <div class="empty-summary" *ngIf="!cart || cart.items.length === 0">
+      <p>Your cart is empty</p>
+    </div>
+  </mat-card-content>
+</mat-card>

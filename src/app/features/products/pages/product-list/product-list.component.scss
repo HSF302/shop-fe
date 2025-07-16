@@ -1,0 +1,146 @@
+.product-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+  }
+
+  .content-wrapper {
+    display: flex;
+    gap: 30px;
+
+    .filters-sidebar {
+      flex: 0 0 280px;
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .products-main {
+      flex: 1;
+
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+
+        mat-spinner {
+          margin-bottom: 20px;
+        }
+
+        p {
+          color: #7f8c8d;
+          font-size: 1.1rem;
+        }
+      }
+
+      .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        text-align: center;
+
+        mat-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          margin-bottom: 20px;
+        }
+
+        p {
+          color: #e74c3c;
+          font-size: 1.1rem;
+          margin-bottom: 20px;
+        }
+      }
+
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+
+        .no-products {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 20px;
+          text-align: center;
+
+          mat-icon {
+            font-size: 64px;
+            width: 64px;
+            height: 64px;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+          }
+
+          h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+          }
+
+          p {
+            color: #7f8c8d;
+          }
+        }
+      }
+
+      mat-paginator {
+        background: transparent;
+        border-top: 1px solid #ecf0f1;
+        padding-top: 20px;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .product-list-container {
+    padding: 15px;
+
+    .header {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .content-wrapper {
+      flex-direction: column;
+      gap: 20px;
+
+      .filters-sidebar {
+        flex: none;
+        position: static;
+      }
+
+      .products-main {
+        .products-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 15px;
+        }
+      }
+    }
+  }
+}

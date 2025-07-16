@@ -1,0 +1,87 @@
+<mat-card class="product-card" [class.out-of-stock]="!isInStock()">
+  <div class="image-container">
+    <img
+      mat-card-image
+      [src]="getProductImage()"
+      [alt]="product.name"
+      (error)="onImageError($event)">
+    
+    <div class="stock-badge" [ngClass]="getStockStatusClass()">
+      {{ getStockStatus() }}
+    </div>
+
+    <div class="brand-badge">
+      {{ product.brand }}
+    </div>
+  </div>
+
+  <mat-card-content>
+    <div class="product-info">
+      <h3 class="product-name" [title]="product.name">
+        {{ product.name }}
+      </h3>
+      
+      <p class="product-description" [title]="product.description">
+        {{ product.description }}
+      </p>
+
+      <div class="product-details">
+        <div class="category">
+          <mat-icon>category</mat-icon>
+          <span>{{ product.category.name }}</span>
+        </div>
+
+        <div class="sizes" *ngIf="product.sizes?.length">
+          <mat-icon>straighten</mat-icon>
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let size of product.sizes.slice(0, 3)">
+              {{ size.name }}
+            </mat-chip>
+            <mat-chip *ngIf="product.sizes.length > 3">
+              +{{ product.sizes.length - 3 }}
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+
+        <div class="colors" *ngIf="product.colors?.length">
+          <mat-icon>palette</mat-icon>
+          <div class="color-swatches">
+            <div 
+              *ngFor="let color of product.colors.slice(0, 4)" 
+              class="color-swatch"
+              [style.background-color]="color.name.toLowerCase()"
+              [title]="color.name">
+            </div>
+            <span *ngIf="product.colors.length > 4" class="more-colors">
+              +{{ product.colors.length - 4 }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-section">
+        <span class="price">{{ getFormattedPrice() }}</span>
+        <span class="price-note">Starting from</span>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      [disabled]="!isInStock()"
+      (click)="onAddToCart($event)">
+      <mat-icon>add_shopping_cart</mat-icon>
+      {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+    </button>
+    
+    <button 
+      mat-stroked-button 
+      color="primary"
+      (click)="onViewDetails()">
+      <mat-icon>visibility</mat-icon>
+      View Details
+    </button>
+  </mat-card-actions>
+</mat-card>

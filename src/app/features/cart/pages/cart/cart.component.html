@@ -1,0 +1,134 @@
+<div class="cart-container">
+  <div class="cart-header">
+    <h1>
+      <mat-icon>shopping_cart</mat-icon>
+      Shopping Cart
+    </h1>
+    <button mat-button (click)="continueShopping()" class="continue-shopping">
+      <mat-icon>arrow_back</mat-icon>
+      Continue Shopping
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading your cart...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Authenticated User Cart -->
+  <div *ngIf="isAuthenticated && (cart$ | async) as cart" class="cart-content">
+
+    <!-- Empty Cart -->
+    <div *ngIf="cart && cart.items && cart.items.length === 0" class="empty-cart">
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added any items to your cart yet.</p>
+      <button mat-raised-button color="primary" (click)="continueShopping()">
+        <mat-icon>shopping_bag</mat-icon>
+        Start Shopping
+      </button>
+    </div>
+
+    <!-- Cart Items -->
+    <div *ngIf="cart && cart.items && cart.items.length > 0" class="cart-items-section">
+      <div class="cart-items">
+        <app-cart-item
+          *ngFor="let item of cart.items; trackBy: trackByItemId"
+          [item]="item"
+          (updateQuantity)="onUpdateQuantity($event.itemId, $event.quantity)"
+          (removeItem)="onRemoveItem($event)">
+        </app-cart-item>
+      </div>
+
+      <div class="cart-actions">
+        <button mat-button color="warn" (click)="onClearCart()">
+          <mat-icon>clear</mat-icon>
+          Clear Cart
+        </button>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary-section">
+        <app-order-summary
+          [cart]="cart"
+          [showCheckoutButton]="true"
+          (checkout)="onProceedToCheckout()">
+        </app-order-summary>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guest Cart -->
+  <div *ngIf="!isAuthenticated && (guestCart$ | async) as guestCart" class="guest-cart-content">
+
+    <!-- Empty Guest Cart -->
+    <div *ngIf="guestCart && guestCart.items && guestCart.items.length === 0" class="empty-cart">
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added any items to your cart yet.</p>
+      <div class="empty-cart-actions">
+        <button mat-raised-button color="primary" (click)="continueShopping()">
+          <mat-icon>shopping_bag</mat-icon>
+          Start Shopping
+        </button>
+        <button mat-stroked-button color="primary" (click)="goToLogin()">
+          <mat-icon>login</mat-icon>
+          Sign In
+        </button>
+      </div>
+    </div>
+
+    <!-- Guest Cart Items -->
+    <div *ngIf="guestCart && guestCart.items && guestCart.items.length > 0" class="guest-cart-items">
+      <div class="guest-notice">
+        <mat-icon>info</mat-icon>
+        <p>You're shopping as a guest. <a (click)="goToLogin()">Sign in</a> to save your cart and access your order history.</p>
+      </div>
+
+      <div class="cart-items">
+        <div *ngFor="let item of guestCart.items; let i = index" class="guest-cart-item">
+          <div class="item-info">
+            <h4>Product ID: {{ item.productId }}</h4>
+            <p>Size ID: {{ item.sizeId }} | Color ID: {{ item.colorId }} | Material ID: {{ item.materialId }}</p>
+            <p>Quantity: {{ item.quantity }}</p>
+          </div>
+          <button mat-icon-button color="warn" (click)="onRemoveGuestItem(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="guest-cart-summary">
+        <div class="summary-info">
+          <p><strong>Items: {{ guestCart.itemCount }}</strong></p>
+          <p><strong>Total: {{ formatPrice(guestCart.total) }}</strong></p>
+        </div>
+        
+        <div class="checkout-actions">
+          <button mat-raised-button color="primary" (click)="onProceedToCheckout()">
+            <mat-icon>payment</mat-icon>
+            Guest Checkout
+          </button>
+          <button mat-stroked-button color="primary" (click)="goToLogin()">
+            <mat-icon>login</mat-icon>
+            Sign In & Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Loaded State -->
+  <div *ngIf="!isAuthenticated && !(guestCart$ | async)" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading cart...</p>
+  </div>
+
+</div>

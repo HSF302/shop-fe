@@ -1,0 +1,83 @@
+.order-summary-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.summary-section {
+  padding: 10px 0;
+}
+
+.items-summary {
+  margin-bottom: 15px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.item-name {
+  font-size: 14px;
+  color: #666;
+  flex: 1;
+}
+
+.item-price {
+  font-weight: 500;
+  color: #333;
+}
+
+.price-breakdown {
+  margin: 15px 0;
+}
+
+.price-breakdown .summary-row {
+  font-size: 14px;
+  color: #666;
+}
+
+.free-shipping {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.total-section {
+  margin: 15px 0;
+}
+
+.total-row {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total-label {
+  color: #333;
+}
+
+.total-amount {
+  color: #2196f3;
+}
+
+.checkout-section {
+  margin-top: 20px;
+}
+
+.checkout-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.empty-summary {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.empty-summary p {
+  margin: 0;
+  font-size: 16px;
+}

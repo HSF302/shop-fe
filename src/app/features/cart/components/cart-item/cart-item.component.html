@@ -1,0 +1,114 @@
+<mat-card class="cart-item-card">
+  <div class="cart-item-content">
+    
+    <!-- Product Image -->
+    <div class="item-image">
+      <img
+        [src]="getProductImage()"
+        [alt]="item.product.name"
+        (error)="onImageError($event)">
+    </div>
+
+    <!-- Product Details -->
+    <div class="item-details">
+      <div class="product-info">
+        <h3 class="product-name">{{ item.product.name }}</h3>
+        <p class="product-brand">{{ item.product.brand }}</p>
+        <p class="product-sku">SKU: {{ item.product.sku }}</p>
+      </div>
+
+      <div class="variant-info">
+        <div class="variant-item">
+          <span class="variant-label">Size:</span>
+          <span class="variant-value">{{ item.size.name }}</span>
+          <span class="variant-price" *ngIf="item.size.additionalPrice > 0">
+            (+{{ formatPrice(item.size.additionalPrice) }})
+          </span>
+        </div>
+
+        <div class="variant-item">
+          <span class="variant-label">Color:</span>
+          <div class="color-info">
+            <div class="color-swatch" [style.background-color]="item.color.name.toLowerCase()"></div>
+            <span class="variant-value">{{ item.color.name }}</span>
+            <span class="variant-price" *ngIf="item.color.additionalPrice > 0">
+              (+{{ formatPrice(item.color.additionalPrice) }})
+            </span>
+          </div>
+        </div>
+
+        <div class="variant-item">
+          <span class="variant-label">Material:</span>
+          <span class="variant-value">{{ item.material.name }}</span>
+          <span class="variant-price" *ngIf="item.material.additionalPrice > 0">
+            (+{{ formatPrice(item.material.additionalPrice) }})
+          </span>
+        </div>
+
+        <div class="variant-item" *ngIf="item.addons && item.addons.length > 0">
+          <span class="variant-label">Add-ons:</span>
+          <div class="addons-list">
+            <span *ngFor="let addon of item.addons; let last = last" class="addon-item">
+              {{ addon.name }} (+{{ formatPrice(addon.price) }}){{ !last ? ', ' : '' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quantity and Price -->
+    <div class="item-controls">
+      <div class="quantity-section">
+        <label class="quantity-label">Quantity:</label>
+        <div class="quantity-controls">
+          <button 
+            mat-icon-button 
+            (click)="decreaseQuantity()" 
+            [disabled]="item.quantity <= 1"
+            class="quantity-btn">
+            <mat-icon>remove</mat-icon>
+          </button>
+          
+          <input
+            type="number"
+            [value]="item.quantity"
+            (change)="onQuantityInputChange($event)"
+            min="1"
+            max="99"
+            class="quantity-input">
+          
+          <button 
+            mat-icon-button 
+            (click)="increaseQuantity()" 
+            [disabled]="item.quantity >= 99"
+            class="quantity-btn">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="price-section">
+        <div class="unit-price">
+          <span class="price-label">Unit Price:</span>
+          <span class="price-value">{{ formatPrice(item.unitPrice) }}</span>
+        </div>
+        <div class="total-price">
+          <span class="price-label">Total:</span>
+          <span class="price-value total">{{ formatPrice(getItemTotal()) }}</span>
+        </div>
+      </div>
+
+      <div class="item-actions">
+        <button 
+          mat-icon-button 
+          color="warn" 
+          (click)="onRemove()"
+          class="remove-btn"
+          matTooltip="Remove item">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</mat-card>
