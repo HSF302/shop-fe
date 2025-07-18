@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+            <html xmlns:th="http://www.thymeleaf.org">
+            <head>
+                <title>Thêm sản phẩm vào giỏ</title>
+            </head>
+            <body>
+            <h2>Thêm sản phẩm vào giỏ</h2>
+
+            <form th:action="@{/cart-items/add}" th:object="${cartItem}" method="post">
+                <!-- Account selection for admin -->
+                <div th:if="${role == 'ADMIN'}">
+                    <label>Người dùng:</label>
+                    <select name="accountId" required>
+                        <option th:each="a : ${accounts}" th:value="${a.id}" th:text="${a.email}"></option>
+                    </select><br/><br/>
+                </div>
+
+                <!-- Product selection - hidden if productId is provided -->
+                <div th:if="${selectedProduct == null}">
+                    <label>Sản phẩm:</label>
+                    <select th:field="*{product.id}" required>
+                        <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.description}"></option>
+                    </select><br/><br/>
+                </div>
+                <!-- Hidden input if product is pre-selected -->
+                <input type="hidden" th:if="${selectedProduct != null}" th:field="*{product.id}" th:value="${selectedProduct.id}" />
+
+                <label>Kích thước:</label>
+                <select th:field="*{size.id}" required>
+                    <option th:each="s : ${sizes}" th:value="${s.id}" th:text="${s.name}"></option>
+                </select><br/><br/>
+
+                <label>Màu sắc:</label>
+                <select th:field="*{color.id}" required>
+                    <option th:each="c : ${colors}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select><br/><br/>
+
+                <label>Chất liệu:</label>
+                <select th:field="*{material.id}" required>
+                    <option th:each="m : ${materials}" th:value="${m.id}" th:text="${m.name}"></option>
+                </select><br/><br/>
+
+                <label>Addon:</label><br/>
+                <div th:each="a : ${addons}">
+                    <input type="checkbox" th:field="*{addons}" th:value="${a.id}" th:id="'addon-' + ${a.id}" />
+                    <label th:for="'addon-' + ${a.id}" th:text="${a.name}"></label><br/>
+                </div><br/>
+
+                <label>Số lượng:</label>
+                <input type="number" th:field="*{quantity}" min="1" required/><br/><br/>
+
+                <button type="submit">Thêm</button>
+                <a th:href="@{/cart-items}">Hủy</a>
+            </form>
+            </body>
+            </html>

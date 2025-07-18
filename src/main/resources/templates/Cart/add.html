@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm Giỏ hàng</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Thêm Giỏ hàng</h2>
+
+<form th:action="@{/carts/add}" th:object="${cart}" method="post"
+      th:if="${role == 'ADMIN'}">
+    <div>
+        <label for="account">Tài khoản:</label>
+        <input type="number" id="account" th:field="*{account.id}" required />
+    </div>
+
+    <div>
+        <button type="submit">Thêm</button>
+        <a th:href="@{/carts}">Hủy</a>
+    </div>
+</form>
+
+<p th:if="${role != 'ADMIN'}">Bạn không có quyền truy cập trang này.</p>
+</body>
+</html>

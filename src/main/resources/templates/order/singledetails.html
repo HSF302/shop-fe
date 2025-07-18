@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Chi tiết Sản phẩm trong Đơn hàng</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Sản phẩm trong Đơn hàng</h2>
+
+<div class="price-details">
+  <p><strong>Hình ảnh:</strong>
+    <img th:src="${orderDetail.product.imageUrl}"
+         alt="Ảnh sản phẩm"
+         style="max-width: 300px; height: auto;" />
+  </p>
+  <p><strong>Sản phẩm:</strong> <span th:text="${orderDetail.product.description}"></span></p>
+
+  <p><strong>Size:</strong> <span th:text="${orderDetail.size.name}"></span>
+    (<span th:text="${#numbers.formatDecimal(orderDetail.size.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+
+  <p><strong>Màu sắc:</strong> <span th:text="${orderDetail.color.name}"></span>
+    (<span th:text="${#numbers.formatDecimal(orderDetail.color.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+
+  <p><strong>Chất liệu:</strong> <span th:text="${orderDetail.material.name}"></span>
+    (<span th:text="${#numbers.formatDecimal(orderDetail.material.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+
+  <p><strong>Phụ kiện:</strong></p>
+  <ul th:if="${!#lists.isEmpty(orderDetail.addons)}">
+    <li th:each="addon : ${orderDetail.addons}">
+      <span th:text="${addon.name}"></span>
+      (<span th:text="${#numbers.formatDecimal(addon.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)
+    </li>
+  </ul>
+  <p th:if="${#lists.isEmpty(orderDetail.addons)}">Không có phụ kiện</p>
+
+  <p><strong>Số lượng:</strong> <span th:text="${orderDetail.quantity}">1</span></p>
+
+  <p class="total"><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>đ</p>
+</div>
+
+<a th:href="@{/orders/details/{orderId}(orderId=${orderDetail.order.id})}">Quay lại đơn hàng</a>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm Kích thước</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Thêm Kích thước</h2>
+<form th:action="@{/sizes/add}" th:object="${size}" method="post">
+    <div>
+        <label for="name">Tên kích thước:</label>
+        <input type="text" id="name" th:field="*{name}" required />
+    </div>
+    <div>
+        <label for="price">Giá:</label>
+        <input type="number" step="0.01" id="price" th:field="*{price}" required />
+    </div>
+    <div>
+        <button type="submit">Thêm</button>
+        <a th:href="@{/sizes}">Hủy</a>
+    </div>
+</form>
+</body>
+</html>

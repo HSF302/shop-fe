@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Authentication Pages - Office Dress Shop</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-link {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0.5rem;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .demo-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .demo-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list i {
+            color: #28a745;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-card text-center">
+            <h1 class="mb-4">
+                <i class="fas fa-palette me-2"></i>
+                Authentication Pages Demo
+            </h1>
+            <p class="lead text-muted">
+                Các trang xác thực đã được thiết kế với Bootstrap và CSS tùy chỉnh
+            </p>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="demo-card text-center">
+            <h3 class="mb-4">
+                <i class="fas fa-link me-2"></i>
+                Các trang có sẵn
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <a th:href="@{/auth/login}" class="demo-link w-100">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Trang Đăng nhập
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a th:href="@{/auth/register}" class="demo-link w-100">
+                        <i class="fas fa-user-plus"></i>
+                        Trang Đăng ký
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a th:href="@{/auth/forgot-password}" class="demo-link w-100">
+                        <i class="fas fa-key"></i>
+                        Quên mật khẩu
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a th:href="@{/auth/reset-password?token=demo-token}" class="demo-link w-100">
+                        <i class="fas fa-lock"></i>
+                        Đặt lại mật khẩu
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="demo-card">
+            <h3 class="mb-4">
+                <i class="fas fa-star me-2"></i>
+                Tính năng đã tích hợp
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Responsive design với Bootstrap 5
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Font Awesome icons
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Custom CSS animations
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Form validation
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Loading states
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Password strength indicator
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Password visibility toggle
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Error/Success messages
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Auto-focus inputs
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Accessibility features
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Details -->
+        <div class="demo-card">
+            <h3 class="mb-4">
+                <i class="fas fa-code me-2"></i>
+                Chi tiết kỹ thuật
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Frontend</h5>
+                    <ul class="list-unstyled">
+                        <li>• Bootstrap 5.3.0</li>
+                        <li>• Font Awesome 6.4.0</li>
+                        <li>• Custom CSS</li>
+                        <li>• Vanilla JavaScript</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Backend</h5>
+                    <ul class="list-unstyled">
+                        <li>• Spring Boot</li>
+                        <li>• Thymeleaf</li>
+                        <li>• Spring Security</li>
+                        <li>• JPA/Hibernate</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled">
+                        <li>• Form validation</li>
+                        <li>• CSRF protection</li>
+                        <li>• Password encryption</li>
+                        <li>• Email verification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="demo-card text-center">
+            <p class="text-muted mb-0">
+                <i class="fas fa-heart text-danger me-1"></i>
+                Được thiết kế với tình yêu cho Office Dress Shop
+            </p>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

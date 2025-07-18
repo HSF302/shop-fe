@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Addon</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Addon</h2>
+<p><strong>ID:</strong> <span th:text="${addon.id}"></span></p>
+<p><strong>Tên:</strong> <span th:text="${addon.name}"></span></p>
+<p><strong>Giá:</strong> <span th:text="${addon.price}"></span></p>
+
+<a th:href="@{/addons}">Quay lại danh sách</a>
+</body>
+</html>

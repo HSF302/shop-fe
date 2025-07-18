@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Kích thước</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Kích thước</h2>
+<p><strong>ID:</strong> <span th:text="${size.id}"></span></p>
+<p><strong>Tên:</strong> <span th:text="${size.name}"></span></p>
+<p><strong>Giá:</strong> <span th:text="${size.price}"></span></p>
+<a th:href="@{/sizes}">Quay lại danh sách</a>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upload Ảnh Đầm</title>
+    <meta charset="UTF-8">
+    <style>
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<h2>Upload Ảnh Đầm</h2>
+
+<form th:action="@{/officedresses/upload/__${dressId}__}" method="post" enctype="multipart/form-data">
+    <!-- Safely display current image if it exists -->
+    <div th:if="${officeDress.imageUrl != null}">
+        <label>Ảnh hiện tại:</label><br>
+        <img th:src="@{${officeDress.imageUrl}}" class="image-preview" alt="Current dress image">
+    </div>
+
+    <div>
+        <label for="imageFile">Chọn ảnh mới:</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" required />
+
+        <!-- Preview for new image -->
+        <div>
+            <label>Xem trước:</label><br>
+            <img id="imagePreview" src="#" alt="Image preview" style="display: none;" class="image-preview"/>
+        </div>
+
+        <p th:if="${message}" th:text="${message}" style="color:green"></p>
+        <button type="submit">Lưu Ảnh</button>
+        <a th:href="@{/officedresses}">Quay lại</a>
+    </div>
+</form>
+
+<script>
+    // Image preview functionality
+    document.getElementById('imageFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

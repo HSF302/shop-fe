@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Chất liệu</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Chất liệu</h2>
+<p><strong>ID:</strong> <span th:text="${material.id}"></span></p>
+<p><strong>Tên:</strong> <span th:text="${material.name}"></span></p>
+<p><strong>Giá:</strong> <span th:text="${material.price}"></span></p>
+<a th:href="@{/materials}">Quay lại danh sách</a>
+</body>
+</html>

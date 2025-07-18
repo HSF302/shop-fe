@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm Đầm Công Sở</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Thêm Đầm Công Sở</h2>
+
+<form th:action="@{/officedresses/add}" th:object="${officeDress}" method="post">
+    <div>
+        <label for="description">Mô tả:</label>
+        <input type="text" id="description" th:field="*{description}" required />
+    </div>
+
+    <div>
+        <label for="basePrice">Giá cơ bản:</label>
+        <input type="number" step="0.01" id="basePrice" th:field="*{basePrice}" required />
+    </div>
+
+    <div>
+        <label for="quantity">Số lượng:</label>
+        <input type="number" id="quantity" th:field="*{quantity}" required />
+    </div>
+
+    <div>
+        <label for="category">Danh mục:</label>
+        <select id="category" th:field="*{category.id}" required>
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="sizes">Kích thước (nhiều):</label>
+        <select id="sizes" th:field="*{sizes}" multiple required>
+            <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.name}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="colors">Màu sắc (nhiều):</label>
+        <select id="colors" th:field="*{colors}" multiple required>
+            <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="materials">Chất liệu (nhiều):</label>
+        <select id="materials" th:field="*{materials}" multiple required>
+            <option th:each="material : ${materials}" th:value="${material.id}" th:text="${material.name}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="addons">Phụ kiện (tùy chọn):</label>
+        <select id="addons" th:field="*{addons}" multiple>
+            <option th:each="addon : ${addons}" th:value="${addon.id}" th:text="${addon.name}"></option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Thêm</button>
+        <a th:href="@{/officedresses}">Hủy</a>
+    </div>
+</form>
+</body>
+</html>

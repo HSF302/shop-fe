@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Màu sắc</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chỉnh sửa Màu sắc</h2>
+<form th:action="@{/colors/edit/{id}(id=${color.id})}" th:object="${color}" method="post">
+    <div>
+        <label for="name">Tên màu:</label>
+        <input type="text" id="name" th:field="*{name}" required />
+    </div>
+    <div>
+        <label for="price">Giá:</label>
+        <input type="number" step="0.01" id="price" th:field="*{price}" required />
+    </div>
+    <div>
+        <button type="submit">Lưu</button>
+        <a th:href="@{/colors}">Hủy</a>
+    </div>
+</form>
+</body>
+</html>
