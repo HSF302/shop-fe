@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+<h1>Account Management</h1>
+
+<div class="d-flex justify-content-between mb-3">
+    <!-- Search Box -->
+    <form th:action="@{/accounts/list}" method="get" class="d-flex">
+        <input type="text" name="search" th:value="${searchTerm}"
+               class="form-control me-2" placeholder="Search by name or email">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Create Button -->
+    <a th:href="@{/accounts/list/create}" class="btn btn-success">
+        Create New Account
+    </a>
+</div>
+
+<!-- Accounts Table -->
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="account : ${accounts}">
+        <td th:text="${account.id}"></td>
+        <td th:text="${account.email}"></td>
+        <td th:text="${account.name}"></td>
+        <td>
+            <span th:class="${account.actived ? 'badge bg-success' : 'badge bg-danger'}"
+                  th:text="${account.actived ? 'Active' : 'Inactive'}">
+            </span>
+        </td>
+        <td>
+            <a th:href="@{/profile/{id}(id=${account.id})}" class="btn btn-sm btn-success">view</a>
+            <a th:href="@{/accounts/list/edit/{id}(id=${account.id})}" class="btn btn-sm btn-warning">Edit</a>
+            <a th:href="@{/accounts/list/delete/{id}(id=${account.id})}"
+               class="btn btn-sm btn-danger"
+               onclick="return confirm('Are you sure you want to deactivate this account?')">Deactivate</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Simple Pagination -->
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a th:href="@{/accounts/list(search=${searchTerm}, page=${currentPage - 1})}"
+                   class="page-link">Previous</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a th:href="@{/accounts/list(search=${searchTerm}, page=${currentPage + 1})}"
+                   class="page-link">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Giỏ hàng</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Giỏ hàng</h2>
+
+<p><strong>ID:</strong> <span th:text="${cart.id}"></span></p>
+<p><strong>Tài khoản:</strong> <span th:text="${cart.account.email}"></span></p>
+
+<h3>Danh sách sản phẩm trong giỏ</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Sản phẩm</th>
+        <th>Kích thước</th>
+        <th>Màu</th>
+        <th>Chất liệu</th>
+        <th>Phụ kiện</th>
+        <th>Số lượng</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${cart.items}">
+        <td th:text="${item.product.description}"></td>
+        <td th:text="${item.size.name}"></td>
+        <td th:text="${item.color.name}"></td>
+        <td th:text="${item.material.name}"></td>
+        <td>
+            <ul>
+                <li th:each="addon : ${item.addons}" th:text="${addon.name}"></li>
+            </ul>
+        </td>
+        <td th:text="${item.quantity}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/carts}">Quay lại danh sách</a>
+</body>
+</html>

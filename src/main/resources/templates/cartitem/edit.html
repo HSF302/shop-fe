@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sửa Sản phẩm trong Giỏ</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Sửa Sản phẩm trong Giỏ</h2>
+
+<div th:if="${role != 'ADMIN' and cartItem.cart.account.id != session.account.id}">
+    <p>Bạn không có quyền sửa sản phẩm này.</p>
+    <a th:href="@{/cart-items}">Quay lại</a>
+</div>
+
+<div th:if="${role == 'ADMIN' or cartItem.cart.account.id == session.account.id}">
+    <form th:action="@{|/cart-items/edit/${cartItem.id}|}" th:object="${cartItem}" method="post">
+        <!-- Số lượng -->
+        <div>
+            <label for="quantity">Số lượng:</label>
+            <input type="number" id="quantity" th:field="*{quantity}" min="1" required/>
+        </div>
+
+        <!-- Kích thước -->
+        <div>
+            <label for="size">Kích thước:</label>
+            <select id="size" th:field="*{size.id}" required>
+                <option th:each="size : ${sizes}"
+                        th:value="${size.id}"
+                        th:text="${size.name}"></option>
+            </select>
+        </div>
+
+        <!-- Màu sắc -->
+        <div>
+            <label for="color">Màu sắc:</label>
+            <select id="color" th:field="*{color.id}" required>
+                <option th:each="color : ${colors}"
+                        th:value="${color.id}"
+                        th:text="${color.name}"></option>
+            </select>
+        </div>
+
+        <!-- Chất liệu -->
+        <div>
+            <label for="material">Chất liệu:</label>
+            <select id="material" th:field="*{material.id}" required>
+                <option th:each="material : ${materials}"
+                        th:value="${material.id}"
+                        th:text="${material.name}"></option>
+            </select>
+        </div>
+
+        <!-- Phụ kiện -->
+        <div>
+            <label>Phụ kiện:</label><br/>
+            <div th:each="addon : ${addons}">
+                <input type="checkbox"
+                       th:field="*{addons}"
+                       th:value="${addon.id}"
+                       th:id="'addon-' + ${addon.id}"/>
+                <label th:for="'addon-' + ${addon.id}"
+                       th:text="${addon.name}"></label><br/>
+            </div>
+        </div>
+
+        <!-- Các trường ẩn để giữ lại dữ liệu cũ -->
+        <input type="hidden" th:field="*{cart.id}"/>
+        <input type="hidden" th:field="*{product.id}"/>
+
+        <div>
+            <button type="submit">Lưu thay đổi</button>
+            <a th:href="@{/cart-items}">Hủy</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

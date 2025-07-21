@@ -1,0 +1,91 @@
+<div class="container my-4">
+    <h2 class="mb-4">Chi tiết đơn hàng</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Trạng thái đơn hàng</h5>
+            <label class="col-sm-2 col-form-label">Trạng thái hiện tại:</label>
+            <div class="col-sm-4">
+                        <span class="form-control-plaintext font-weight-bold"
+                              th:text="${order.orderStatus}"></span>
+            </div>
+            <form th:if="${account.getRole().toString() == 'ADMIN'}" th:action="@{/orders/details/{orderId}(orderId=${order.id})}" method="post">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Cập nhật trạng thái:</label>
+                    <div class="col-sm-3">
+                        <select name="status" class="form-control">
+                            <option value="PENDING">PENDING</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Hình ảnh</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="detail : ${orderDetails}">
+                <td th:text="${detail.product.description}"></td>
+                <td>
+                    <img th:src="${detail.product.imageUrl}"
+                         alt="Ảnh sản phẩm"
+                         style="max-width: 300px; height: auto;" />
+                </td>
+                <td th:text="${detail.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(detail.unitPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                <td th:text="${#numbers.formatDecimal(detail.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                <td>
+                    <a th:href="@{/orders/details/product/{id}(id=${detail.id})}"
+                       class="btn btn-info btn-sm">Xem</a>
+                </td>
+
+            </tr>
+            <tr th:if="${#lists.isEmpty(orderDetails)}">
+                <td colspan="5" class="text-center">Không có sản phẩm nào trong đơn hàng</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/orders/details/{orderId}(orderId=${param.orderId},page=${currentPage - 1})}">
+                    Trước
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/orders/details/{orderId}(orderId=${param.orderId},page=${i})}"
+                   th:text="${i + 1}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/orders/details/{orderId}(orderId=${param.orderId},page=${currentPage + 1})}">
+                    Sau
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="mt-4">
+        <a th:href="@{/orders}" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>
