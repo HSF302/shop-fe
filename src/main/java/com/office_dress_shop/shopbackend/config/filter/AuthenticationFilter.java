@@ -19,7 +19,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        // Các đường dẫn public
         if (isPublicPath(path)) {
             filterChain.doFilter(request, response);
             return;
@@ -28,25 +27,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         HttpSession session = request.getSession(false);
         Account account = session != null ? (Account) session.getAttribute("account") : null;
 
-        // check session
         if (account == null) {
             response.sendRedirect("/error");
             return;
         }
 
-        // has both role
         if (isBothPath(path) && (account.getRole() == null)) {
             response.sendRedirect("/error");
             return;
         }
 
-        // has customer role
-//        if (isCustomerPath(path) && (account.getRole() == null || !account.getRole().name().equals("CUSTOMER"))) {
-//            response.sendRedirect("/error");
-//            return;
-//        }
 
-        // has admin role
         if (isAdminPath(path) && (account.getRole() == null || !account.getRole().name().equals("ADMIN"))) {
             response.sendRedirect("/error");
             return;
@@ -68,26 +59,23 @@ private boolean isPublicPath(String path) {
 }
 
     private boolean isBothPath(String path) {
-        return path.startsWith("/profile") ||
-                path.startsWith("/cart-items") ||
-                path.startsWith("/orders");
-
+        return path.startsWith("/profile")
+            || path.startsWith("/cart-items")
+            || path.startsWith("/carts")
+            || path.startsWith("/orders");
     }
 
     public static boolean isAdminPath(String path) {
-        return path.startsWith("/accounts/list") ||
-                path.startsWith("addons") ||
-                path.startsWith("/categories") ||
-                path.startsWith("/colors") ||
-                path.startsWith("/materials") ||
-                path.startsWith("/sizes") ||
-                path.startsWith("/carts") ||
-                path.startsWith("/officedresses/")
-                ;
+        return path.startsWith("/admin/")
+            || path.startsWith("/accounts/list")
+            || path.startsWith("addons")
+            || path.startsWith("/categories")
+            || path.startsWith("/colors")
+            || path.startsWith("/materials")
+            || path.startsWith("/sizes")
+            || path.startsWith("/officedresses/");
     }
 
-//    private boolean isCustomerPath(String path) {
-//        return path.startsWith("/profile");
-//    }
+
 
 }

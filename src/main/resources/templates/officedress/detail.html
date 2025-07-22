@@ -382,15 +382,15 @@
 
                         <!-- Action Buttons -->
                         <div class="product-actions-detail">
-                            <a th:href="@{/cart-items/add(productId=${officeDress.id})}"
-                               class="btn-add-cart"
-                               th:classappend="${officeDress.quantity <= 0 or !officeDress.status ? 'disabled' : ''}"
-                               th:onclick="${officeDress.quantity <= 0 or !officeDress.status ? 'return false;' : ''}">
+                            <button type="button" class="btn btn-primary btn-add-cart" th:if="${officeDress.quantity > 0 and officeDress.status}" data-bs-toggle="modal" data-bs-target="#addToCartModal">
                                 <i class="fas fa-shopping-cart me-2"></i>
-                                <span th:if="${officeDress.quantity > 0 and officeDress.status}">Thêm vào giỏ hàng</span>
-                                <span th:unless="${officeDress.quantity > 0 and officeDress.status}">Hết hàng</span>
+                                Thêm vào giỏ hàng
+                            </button>
+                            <a th:if="${officeDress.quantity <= 0 or !officeDress.status}"
+                               class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-ban me-2"></i>
+                                Hết hàng
                             </a>
-
                             <a th:href="@{/}" class="btn-back">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Quay lại
@@ -400,6 +400,75 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal form thêm vào giỏ hàng -->
+    <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="addToCartModalLabel">Thêm sản phẩm vào giỏ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="addToCartForm">
+              <div class="mb-3">
+                <label class="form-label">Kích thước:</label>
+                <select name="sizeId" class="form-select" required>
+                  <option th:each="s : ${officeDress.sizes}" th:value="${s.id}" th:text="${s.name}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Màu sắc:</label>
+                <select name="colorId" class="form-select" required>
+                  <option th:each="c : ${officeDress.colors}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Chất liệu:</label>
+                <select name="materialId" class="form-select" required>
+                  <option th:each="m : ${officeDress.materials}" th:value="${m.id}" th:text="${m.name}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Addon:</label>
+                <div class="d-flex flex-wrap gap-2">
+                  <div th:each="a : ${officeDress.addons}" class="form-check">
+                    <input type="checkbox" name="addonIds" th:value="${a.id}" th:id="'addon-' + ${a.id}" class="form-check-input" />
+                    <label th:for="'addon-' + ${a.id}" th:text="${a.name}" class="form-check-label"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Số lượng:</label>
+                <input type="number" name="quantity" min="1" value="1" required class="form-control"/>
+              </div>
+              <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" class="btn btn-primary">Thêm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal xác nhận thành công -->
+    <div class="modal fade" id="addToCartSuccessModal" tabindex="-1" aria-labelledby="addToCartSuccessModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addToCartSuccessModalLabel">Đã thêm vào giỏ hàng!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Sản phẩm đã được thêm vào giỏ hàng thành công.<br>Bạn muốn xem giỏ hàng hay tiếp tục mua sắm?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tiếp tục mua sắm</button>
+            <a href="/cart-items" class="btn btn-primary">Xem giỏ hàng</a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Bootstrap JS -->
@@ -434,6 +503,32 @@
                 this.style.transform = 'scale(1)';
             });
         }
+    </script>
+    <script>
+    // Gửi form modal bằng AJAX
+    const addToCartForm = document.getElementById('addToCartForm');
+    if (addToCartForm) {
+      addToCartForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(addToCartForm);
+        // Thêm productId vào formData
+        formData.append('productId', /*[[${officeDress.id}]]*/ document.location.pathname.split('/').pop());
+        fetch('/cart-items/add', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => {
+          if (res.redirected || res.ok) {
+            const modal = new bootstrap.Modal(document.getElementById('addToCartSuccessModal'));
+            modal.show();
+            // Đóng modal form
+            bootstrap.Modal.getInstance(document.getElementById('addToCartModal')).hide();
+          } else {
+            alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+          }
+        });
+      });
+    }
     </script>
 </body>
 </html>

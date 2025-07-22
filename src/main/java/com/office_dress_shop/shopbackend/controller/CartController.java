@@ -34,29 +34,33 @@ public class CartController {
             HttpSession session) {
 
         Account acc = (Account) session.getAttribute("account");
+        System.out.println("DEBUG /carts - role: " + (acc != null ? acc.getRole() : "null"));
 
-        // Add search term to model for thymeleaf
         model.addAttribute("searchTerm", search);
 
-        if (acc.getRole() == Role.ADMIN) {
-            // Get paginated results for admin (page size 10 by default)
+        if (acc != null && acc.getRole() == Role.ADMIN) {
             Page<Cart> cartPage = cartService.searchByName(search, page, 10);
 
-            // Add to model
             model.addAttribute("carts", cartPage.getContent());
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", cartPage.getTotalPages());
-        } else {
-            // For regular users, just get their single cart (no pagination needed)
+            System.out.println("DEBUG /carts - return view: cart/list (admin)");
+            return "cart/list";
+        } else if (acc != null && acc.getRole() == Role.CUSTOMER) {
             Cart cart = cartService.getOrCreateCart(acc);
-            model.addAttribute("carts", java.util.List.of(cart));
-
-            // Set pagination attributes for consistency in template
-            model.addAttribute("currentPage", 0);
-            model.addAttribute("totalPages", 1);
+            model.addAttribute("selectedCart", cart);
+            var cartItems = cart.getItems();
+            model.addAttribute("cartItems", cartItems);
+            double cartTotal = cartItems.stream().mapToDouble(item -> item.calculateTotalPrice()).sum();
+            model.addAttribute("cartTotal", cartTotal);
+            model.addAttribute("account", acc);
+            model.addAttribute("role", acc.getRole().name());
+            System.out.println("DEBUG /carts - return view: cartitem/list (customer)");
+            return "cartitem/list";
+        } else {
+            System.out.println("DEBUG /carts - unknown role, redirect home");
+            return "redirect:/";
         }
-
-        return "cart/list";
     }
 
     @GetMapping("/{id}")

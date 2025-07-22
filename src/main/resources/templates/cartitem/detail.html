@@ -3,46 +3,48 @@
 <head>
     <title>Chi tiết Sản phẩm trong Giỏ</title>
     <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h2>Chi tiết Sản phẩm trong Giỏ</h2>
-
-<div class="price-details">
-    <p><strong>Hình ảnh:</strong>
-        <img th:src="${cartItem.product.imageUrl}"
-             alt="Ảnh sản phẩm"
-             style="max-width: 300px; height: auto;" />
-    </p>
-    <p>Sản phẩm: <span th:text="${cartItem.product.description}"></span></p>
-
-    <p>Size: <span th:text="${cartItem.size.name}"></span>
-        (<span th:text="${#numbers.formatDecimal(cartItem.size.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
-
-    <p>Màu sắc: <span th:text="${cartItem.color.name}"></span>
-        (<span th:text="${#numbers.formatDecimal(cartItem.color.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
-
-    <p>Chất liệu: <span th:text="${cartItem.material.name}"></span>
-        (<span th:text="${#numbers.formatDecimal(cartItem.material.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
-
-    <p>Phụ kiện:</p>
-    <ul th:if="${!#lists.isEmpty(cartItem.addons)}">
-        <li th:each="addon : ${cartItem.addons}">
-            <span th:text="${addon.name}"></span>
-            (<span th:text="${#numbers.formatDecimal(addon.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)
-        </li>
-    </ul>
-    <p th:if="${#lists.isEmpty(cartItem.addons)}">Không có phụ kiện</p>
-
-    <p>Số lượng: <span th:text="${cartItem.quantity}">1</span></p>
-
-    <p class="total"><strong>Tổng tiền: <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>đ</strong></p>
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">Chi tiết Sản phẩm trong Giỏ</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <strong>Hình ảnh:</strong>
+                <img th:src="${cartItem.product.imageUrl}"
+                     alt="Ảnh sản phẩm"
+                     class="img-fluid rounded border"
+                     style="max-width: 300px; height: auto;" />
+            </div>
+            <p>Sản phẩm: <span th:text="${cartItem.product.description}"></span></p>
+            <p>Size: <span th:text="${cartItem.size.name}"></span>
+                (<span th:text="${#numbers.formatDecimal(cartItem.size.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+            <p>Màu sắc: <span th:text="${cartItem.color.name}"></span>
+                (<span th:text="${#numbers.formatDecimal(cartItem.color.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+            <p>Chất liệu: <span th:text="${cartItem.material.name}"></span>
+                (<span th:text="${#numbers.formatDecimal(cartItem.material.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)</p>
+            <p>Phụ kiện:</p>
+            <ul th:if="${!#lists.isEmpty(cartItem.addons)}">
+                <li th:each="addon : ${cartItem.addons}">
+                    <span th:text="${addon.name}"></span>
+                    (<span th:text="${#numbers.formatDecimal(addon.price, 0, 'COMMA', 0, 'POINT')}">0</span>đ)
+                </li>
+            </ul>
+            <p th:if="${#lists.isEmpty(cartItem.addons)}">Không có phụ kiện</p>
+            <p>Số lượng: <span th:text="${cartItem.quantity}">1</span></p>
+            <p class="total"><strong>Tổng tiền: <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>đ</strong></p>
+            <div th:if="${role == 'ADMIN' or cartItem.cart.account.id == session.account.id}" class="mb-2">
+                <a th:href="@{|/cart-items/edit/${cartItem.id}|}" class="btn btn-warning btn-sm">Sửa</a>
+                <a th:href="@{|/cart-items/delete/${cartItem.id}|}" class="btn btn-danger btn-sm" onclick="return confirm('Xóa mục này?')">Xóa</a>
+            </div>
+            <a th:href="@{/cart-items}" class="btn btn-secondary">Quay lại danh sách</a>
+            <a th:href="@{/}" class="btn btn-primary ms-2"><i class="fas fa-home"></i> Trang chủ</a>
+        </div>
+    </div>
 </div>
-
-<div th:if="${role == 'ADMIN' or cartItem.cart.account.id == session.account.id}">
-    <a th:href="@{|/cart-items/edit/${cartItem.id}|}">Sửa</a> |
-    <a th:href="@{|/cart-items/delete/${cartItem.id}|}" onclick="return confirm('Xóa mục này?')">Xóa</a>
-</div>
-
-<a th:href="@{/cart-items}">Quay lại danh sách</a>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

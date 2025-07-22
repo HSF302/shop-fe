@@ -12,7 +12,6 @@
 <body>
 <h2>Danh sách Category</h2>
 
-<!-- Search Box -->
 <div class="search-box">
     <form th:action="@{/categories}" method="get">
         <input type="text" name="search" th:value="${searchTerm}" placeholder="Tìm kiếm theo tên...">
@@ -43,7 +42,6 @@
     </tbody>
 </table>
 
-<!-- Pagination -->
 <div th:if="${totalPages > 1}" class="d-flex justify-content-center">
     <nav>
         <ul class="pagination">
