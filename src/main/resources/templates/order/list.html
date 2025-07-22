@@ -1,101 +1,119 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách đơn hàng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .order-header {background: linear-gradient(90deg, #0d6efd 60%, #6ea8fe 100%);color: #fff;border-radius: 0.5rem;padding: 1.5rem 1rem 1rem 1rem;margin-bottom: 2rem;}
+        .order-header h1 {font-size: 2rem;font-weight: 700;}
+        .order-header .fa-receipt {font-size: 2.5rem;margin-right: 1rem;}
+        .order-card {border-radius: 1rem;box-shadow: 0 2px 12px rgba(0,0,0,0.07);}
+        .order-card .table th, .order-card .table td {vertical-align: middle;}
+        .badge-status {font-size: 0.95em;}
+        .btn-view {background: #0dcaf0; color: #fff; border: none;}
+        .btn-view:hover {background: #0bbbe6; color: #fff;}
+        @media (max-width: 600px) {.order-header h1 { font-size: 1.2rem; }}
+    </style>
 </head>
-<body>
-    <div class="container mt-4">
-        <h2>Danh sách đơn hàng</h2>
-
-        <!-- Search Form -->
-<form th:action="@{/orders}" method="get" class="mb-4">
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="input-group">
-                <span class="input-group-text">Trạng thái</span>
-                <select class="form-select" name="status" th:value="${statusTerm}">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="PENDING" th:selected="${statusTerm == 'PENDING'}">PENDING</option>
-                    <option value="COMPLETED" th:selected="${statusTerm == 'COMPLETED'}">COMPLETED</option>
-                    <option value="CANCELLED" th:selected="${statusTerm == 'CANCELLED'}">CANCELLED</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4" th:if="${account.role == T(com.office_dress_shop.shopbackend.enums.Role).ADMIN}">
-            <div class="input-group">
-                <span class="input-group-text">Email</span>
-                <input type="text" class="form-control" name="email"
-                       th:value="${emailTerm}" placeholder="Tìm theo email...">
-            </div>
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100" type="submit">Lọc</button>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="order-header d-flex align-items-center mb-4">
+        <i class="fas fa-receipt"></i>
+        <div>
+            <h1 class="mb-0">Danh sách đơn hàng</h1>
+            <div class="small">Xem và quản lý các đơn hàng của bạn</div>
         </div>
     </div>
-</form>
-
-        <!-- Orders Table -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Ngày đặt</th>
-                    <th>Trạng thái</th>
-                    <th>Địa chỉ giao hàng</th>
-                    <th>Email</th>
-                    <th>Tổng tiền</th>
-                    <th>Chi tiết</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="order : ${orders}">
-                    <td th:text="${order.id}"></td>
-                    <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${order.orderStatus}"></td>
-                    <td th:text="${order.shippingAddress}"></td>
-                    <td th:text="${order.account.email}"></td>
-                    <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
-                    <td>
-                        <a th:href="@{/orders/details/{id}(id=${order.id})}"
-                           class="btn btn-info btn-sm">Xem</a>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(orders)}">
-                    <td colspan="6" class="text-center">Không tìm thấy đơn hàng</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <nav th:if="${totalPages > 1}">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 0} ? disabled">
-                    <a class="page-link"
-                       th:href="@{/orders/list(page=${currentPage - 1}, search=${searchTerm})}">
-                        Trước
-                    </a>
-                </li>
-
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${currentPage == i} ? active">
-                    <a class="page-link"
-                       th:href="@{/orders/list(page=${i}, search=${searchTerm})}"
-                       th:text="${i + 1}">
-                    </a>
-                </li>
-
-                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? disabled">
-                    <a class="page-link"
-                       th:href="@{/orders/list(page=${currentPage + 1}, search=${searchTerm})}">
-                        Sau
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div class="card order-card mb-4">
+        <div class="card-body">
+            <!-- Search Form -->
+            <form th:action="@{/orders}" method="get" class="mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" name="status" th:value="${statusTerm}">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="PENDING" th:selected="${statusTerm == 'PENDING'}">PENDING</option>
+                            <option value="COMPLETED" th:selected="${statusTerm == 'COMPLETED'}">COMPLETED</option>
+                            <option value="CANCELLED" th:selected="${statusTerm == 'CANCELLED'}">CANCELLED</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" th:if="${account.role == T(com.office_dress_shop.shopbackend.enums.Role).ADMIN}">
+                        <label class="form-label">Email</label>
+                        <input type="text" class="form-control" name="email" th:value="${emailTerm}" placeholder="Tìm theo email...">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" type="submit"><i class="fas fa-filter"></i> Lọc</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Orders Table -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th>Địa chỉ giao hàng</th>
+                        <th>Email</th>
+                        <th>Tổng tiền</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:class="'badge badge-status ' +
+                                (order.orderStatus == 'COMPLETED' ? 'bg-success' :
+                                (order.orderStatus == 'CANCELLED' ? 'bg-danger' : 'bg-warning text-dark'))"
+                                  th:text="${order.orderStatus}"></span>
+                        </td>
+                        <td th:text="${order.shippingAddress}"></td>
+                        <td th:text="${order.account.email}"></td>
+                        <td class="fw-bold text-danger" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                        <td>
+                            <a th:href="@{/orders/details/{id}(id=${order.id})}"
+                               class="btn btn-view btn-sm"><i class="fas fa-eye"></i> Xem</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="7" class="text-center text-muted">Không tìm thấy đơn hàng</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <nav th:if="${totalPages > 1}" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders/list(page=${currentPage - 1}, search=${searchTerm})}">
+                            Trước
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${currentPage == i} ? active">
+                        <a class="page-link"
+                           th:href="@{/orders/list(page=${i}, search=${searchTerm})}"
+                           th:text="${i + 1}">
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders/list(page=${currentPage + 1}, search=${searchTerm})}">
+                            Sau
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

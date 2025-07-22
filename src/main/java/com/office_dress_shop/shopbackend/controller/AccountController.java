@@ -125,4 +125,16 @@ public class AccountController {
         model.addAttribute("message", "Tài khoản đã bị vô hiệu hóa!");
         return "redirect:/accounts/list";
     }
+
+    @GetMapping("/detail/{id}")
+    public String accountDetailModal(@PathVariable int id, Model model) {
+        var account = accountService.findById(id);
+        if (account.isPresent()) {
+            model.addAttribute("account", account.get());
+            model.addAttribute("isAdminView", true);
+            return "customer/profile :: card";
+        }
+        model.addAttribute("message", "Không tìm thấy tài khoản!");
+        return "fragments/error :: errorMessage";
+    }
 }

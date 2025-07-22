@@ -33,7 +33,32 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItem save(CartItem cartItem) {
+        // Kiểm tra trùng sản phẩm trong cart (cùng product, size, color, material, addons)
+        List<CartItem> existingItems = cartItemRepository.findByCartId(cartItem.getCart().getId());
+        for (CartItem existing : existingItems) {
+            if (existing.getProduct().getId() == cartItem.getProduct().getId()
+                && existing.getSize().getId() == cartItem.getSize().getId()
+                && existing.getColor().getId() == cartItem.getColor().getId()
+                && existing.getMaterial().getId() == cartItem.getMaterial().getId()
+                && addonsEquals(existing.getAddons(), cartItem.getAddons())) {
+                // Nếu trùng, cộng dồn số lượng
+                existing.setQuantity(existing.getQuantity() + cartItem.getQuantity());
+                return cartItemRepository.save(existing);
+            }
+        }
+        // Nếu chưa có, tạo mới
         return cartItemRepository.save(cartItem);
+    }
+
+    // So sánh 2 list addon theo id
+    private boolean addonsEquals(List a, List b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        if (a.size() != b.size()) return false;
+        return a.stream().map(x -> ((com.office_dress_shop.shopbackend.pojo.Addon)x).getId()).sorted()
+                .toList().equals(
+                b.stream().map(x -> ((com.office_dress_shop.shopbackend.pojo.Addon)x).getId()).sorted().toList()
+        );
     }
 
     @Override

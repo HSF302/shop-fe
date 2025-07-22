@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý đơn hàng (Admin)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-header {background: linear-gradient(90deg, #0d6efd 60%, #6ea8fe 100%);color: #fff;border-radius: 0.5rem;padding: 1.5rem 1rem 1rem 1rem;margin-bottom: 2rem;}
+        .admin-header h1 {font-size: 2rem;font-weight: 700;}
+        .admin-header .fa-file-invoice-dollar {font-size: 2.5rem;margin-right: 1rem;}
+        .admin-card {border-radius: 1rem;box-shadow: 0 2px 12px rgba(0,0,0,0.07);}
+        .admin-card .table th, .admin-card .table td {vertical-align: middle;}
+        .admin-card .badge {font-size: 0.95em;}
+        .action-btns .btn {margin-right: 0.25rem;margin-bottom: 0.25rem;}
+        @media (max-width: 600px) {.admin-header h1 { font-size: 1.2rem; }}
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="admin-header d-flex align-items-center mb-4">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <div>
+            <h1 class="mb-0">Quản lý đơn hàng</h1>
+            <div class="small">Xem, duyệt, cập nhật trạng thái đơn hàng</div>
+        </div>
+    </div>
+    <div class="card admin-card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center mb-3 g-2">
+                <div class="col-md-8">
+                    <form class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm theo email hoặc trạng thái...">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th>Địa chỉ giao hàng</th>
+                        <th>Email</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                        <td><span th:class="${order.orderStatus == 'COMPLETED' ? 'badge bg-success' : (order.orderStatus == 'CANCELLED' ? 'badge bg-danger' : 'badge bg-warning text-dark')}" th:text="${order.orderStatus}"></span></td>
+                        <td th:text="${order.shippingAddress}"></td>
+                        <td th:text="${order.account.email}"></td>
+                        <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                        <td class="action-btns">
+                            <button class="btn btn-info btn-sm" title="Xem chi tiết" data-bs-toggle="modal" th:attr="data-bs-target='#viewOrderModal-' + ${order.id}"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-danger btn-sm" title="Xóa" data-bs-toggle="modal" th:attr="data-bs-target='#deleteOrderModal-' + ${order.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                        <div class="modal fade" th:id="'viewOrderModal-' + ${order.id}" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="viewOrderModalLabel">Chi tiết đơn hàng</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                              </div>
+                              <div class="modal-body">
+                                <p><strong>ID:</strong> <span th:text="${order.id}"></span></p>
+                                <p><strong>Ngày đặt:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></span></p>
+                                <p><strong>Trạng thái:</strong> <span th:text="${order.orderStatus}"></span></p>
+                                <p><strong>Địa chỉ giao hàng:</strong> <span th:text="${order.shippingAddress}"></span></p>
+                                <p><strong>Email:</strong> <span th:text="${order.account.email}"></span></p>
+                                <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span></p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" th:id="'deleteOrderModal-' + ${order.id}" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <form th:action="@{/admin/orders/delete/{id}(id=${order.id})}" method="get">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="deleteOrderModalLabel">Xác nhận xóa</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                </div>
+                                <div class="modal-body">
+                                  Bạn có chắc chắn muốn xóa đơn hàng <strong th:text="${order.id}"></strong> không?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                  <button type="submit" class="btn btn-danger">Xóa</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="7" class="text-center text-muted">Không tìm thấy đơn hàng nào</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
