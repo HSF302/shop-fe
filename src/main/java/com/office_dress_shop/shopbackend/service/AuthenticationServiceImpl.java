@@ -1,5 +1,6 @@
 package com.office_dress_shop.shopbackend.service;
 
+import com.office_dress_shop.shopbackend.enums.Role;
 import com.office_dress_shop.shopbackend.pojo.Account;
 import com.office_dress_shop.shopbackend.repository.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (authRepository.findAccountByEmail(account.getEmail()) != null) {
             return false;
         }
+        account.setRole(Role.CUSTOMER);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         try {
             authRepository.save(account);

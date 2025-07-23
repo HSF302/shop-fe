@@ -12,6 +12,7 @@ public interface OrderService {
     Order createOrder(Account account, Cart cart);
     Optional<Order> findById(int id);
     Order updateOrderStatus(int id, String status);
+    void deleteById(int id);
     Page<Order> searchOrdersByStatusAndEmail(String status, String email, int page, int size);
     Page<Order> searchOrdersByAccountAndStatus(Account account, String status, int page, int size);
 }

@@ -8,99 +8,257 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link th:href="@{/css/user-style.css}" rel="stylesheet">
+    
+    <style>
+        /* Custom Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.08) !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50 !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            color: #3498db !important;
+            transform: translateY(-1px);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #2c3e50 !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            margin: 0 0.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: #3498db !important;
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-link.active {
+            color: #3498db !important;
+            background: rgba(52, 152, 219, 0.15);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 2px;
+        }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            transform: translateX(5px);
+        }
+        
+        .dropdown-item.text-danger:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c !important;
+        }
+        
+        /* Ensure logout button is visible */
+        .dropdown-item.text-danger {
+            color: #e74c3c !important;
+            font-weight: 500;
+        }
+        
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: rgba(0,0,0,0.1);
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .navbar-toggler:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .navbar-nav {
+                padding: 1rem 0;
+            }
+            
+            .nav-link {
+                margin: 0.25rem 0;
+                padding: 0.75rem 1rem !important;
+            }
+            
+            .dropdown-menu {
+                border: none;
+                box-shadow: none;
+                background: rgba(52, 152, 219, 0.05);
+            }
+        }
+        
+        /* Animation for navbar */
+        .navbar {
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="user-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="mb-0">
-                        <i class="fas fa-store me-2"></i>
-                        Office Dress Shop
-                    </h1>
-                </div>
-                <div class="col-md-6">
-                    <div class="user-info text-end" th:if="${email != null}">
-                        <p class="welcome-text mb-2">
-                            <i class="fas fa-user-circle me-2"></i>
-                            Xin chào, <strong th:text="${email}"></strong>
-                        </p>
-                        <span class="role-badge" th:text="${role}"></span>
+
+
+    <div class="container mt-5">
+        <!-- Modern Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white rounded-3 shadow-sm mb-4" style="border: 1px solid rgba(0,0,0,0.1);">
+            <div class="container-fluid">
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold text-primary" href="/">
+                    <i class="fas fa-store me-2"></i>
+                    Office Dress Shop
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navigation Links -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">
+                                <i class="fas fa-home me-1"></i>
+                                Trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/officedresses">
+                                <i class="fas fa-tshirt me-1"></i>
+                                Sản phẩm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart-items">
+                                <i class="fas fa-shopping-cart me-1"></i>
+                                Giỏ hàng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/orders">
+                                <i class="fas fa-receipt me-1"></i>
+                                Đơn hàng
+                            </a>
+                        </li>
+                        <li class="nav-item" th:if="${role != null and (role == 'ADMIN' or role.toString() == 'ADMIN')}">
+                            <a class="nav-link text-warning fw-bold" href="/admin/categories">
+                                <i class="fas fa-cogs me-1"></i>
+                                Quản trị
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" href="/auth/logout">
+                                <i class="fas fa-cogs me-1"></i>
+                                Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- User Menu -->
+                    <div class="navbar-nav">
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-2 text-primary"></i>
+                                <span th:text="${email != null ? email : 'Khách'}">User</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="/profile">
+                                        <i class="fas fa-user me-2"></i>
+                                        Hồ sơ cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/orders">
+                                        <i class="fas fa-history me-2"></i>
+                                        Lịch sử đơn hàng
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="/auth/logout" style="color: #e74c3c !important; font-weight: 500;">
+                                        <i class="fas fa-sign-out-alt me-2"></i>
+                                        Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container mt-4">
-        <nav class="user-nav">
-            <div class="nav-links">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-home"></i>
-                    Trang chủ
-                </a>
-                <a th:href="@{/profile}" class="nav-link">
-                    <i class="fas fa-user"></i>
-                    Hồ sơ
-                </a>
-                <a th:href="@{/carts}" class="nav-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    Giỏ hàng
-                </a>
-                <a th:href="@{/orders}" class="nav-link">
-                    <i class="fas fa-receipt"></i>
-                    Đơn hàng
-                </a>
-                <a th:href="@{/auth/logout}" class="nav-link logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Đăng xuất
-                </a>
             </div>
         </nav>
-        <div th:if="${role != null and (role == 'ADMIN' or role.toString() == 'ADMIN')}" class="row mb-4 g-3">
-            <div class="col-6 col-md-3">
-                <a th:href="@{/admin/accounts}" class="card text-center shadow-sm admin-card h-100 text-decoration-none">
-                    <div class="card-body">
-                        <i class="fas fa-users-cog fa-2x mb-2 text-primary"></i>
-                        <h6 class="card-title mb-1">Quản lý tài khoản</h6>
-                        <p class="text-muted small mb-0">Tạo, sửa, phân quyền</p>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a th:href="@{/admin/orders}" class="card text-center shadow-sm admin-card h-100 text-decoration-none">
-                    <div class="card-body">
-                        <i class="fas fa-file-invoice-dollar fa-2x mb-2 text-success"></i>
-                        <h6 class="card-title mb-1">Quản lý đơn hàng</h6>
-                        <p class="text-muted small mb-0">Xem, duyệt, cập nhật</p>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a th:href="@{/admin/officedresses}" class="card text-center shadow-sm admin-card h-100 text-decoration-none">
-                    <div class="card-body">
-                        <i class="fas fa-tshirt fa-2x mb-2 text-warning"></i>
-                        <h6 class="card-title mb-1">Quản lý sản phẩm</h6>
-                        <p class="text-muted small mb-0">Thêm, sửa, xóa sản phẩm</p>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a th:href="@{/admin/categories}" class="card text-center shadow-sm admin-card h-100 text-decoration-none">
-                    <div class="card-body">
-                        <i class="fas fa-tags fa-2x mb-2 text-danger"></i>
-                        <h6 class="card-title mb-1">Quản lý danh mục</h6>
-                        <p class="text-muted small mb-0">Phân loại sản phẩm</p>
-                    </div>
-                </a>
-            </div>
-        </div>
 
         <section class="search-section">
-            <h2 class="mb-3">
-                <i class="fas fa-search me-2"></i>
-                Tìm kiếm sản phẩm
-            </h2>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">
+                    <i class="fas fa-search me-2"></i>
+                    Tìm kiếm sản phẩm
+                </h2>
+                <a href="/officedresses" class="btn btn-outline-primary">
+                    <i class="fas fa-th-large me-2"></i>
+                    Xem tất cả sản phẩm
+                </a>
+            </div>
             <form th:action="@{/}" method="get" class="search-form">
                 <input type="text"
                        class="search-input"
@@ -311,6 +469,28 @@
                     }
                 }
             });
+        });
+    </script>
+    
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Ensure dropdown works -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap dropdowns
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl);
+            });
+            
+            // Debug: Check if logout button exists
+            const logoutButton = document.querySelector('.dropdown-item.text-danger');
+            if (logoutButton) {
+                console.log('Logout button found:', logoutButton.textContent.trim());
+            } else {
+                console.log('Logout button not found');
+            }
         });
     </script>
 </body>

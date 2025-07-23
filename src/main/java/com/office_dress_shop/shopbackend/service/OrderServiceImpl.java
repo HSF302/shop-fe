@@ -96,6 +96,23 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
     }
 
+    @Override
+    public void deleteById(int id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+        
+        // Restore dress quantities if order is not cancelled
+        if (!"CANCELLED".equals(order.getOrderStatus())) {
+            restoreDressQuantities(order);
+        }
+        
+        // Delete order details first (due to foreign key constraint)
+        orderDetailRepository.deleteAll(order.getOrderDetails());
+        
+        // Delete the order
+        orderRepository.deleteById(id);
+    }
+
     private void restoreDressQuantities(Order order) {
         for (OrderDetail detail : order.getOrderDetails()) {
             OfficeDress dress = detail.getProduct();

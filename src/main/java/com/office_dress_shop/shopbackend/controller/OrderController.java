@@ -1,6 +1,5 @@
 package com.office_dress_shop.shopbackend.controller;
 
-import com.office_dress_shop.shopbackend.service.AccountService;
 import com.office_dress_shop.shopbackend.service.OrderDetailService;
 import com.office_dress_shop.shopbackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +48,11 @@ public class OrderController {
         model.addAttribute("totalPages", orderPage.getTotalPages());
         model.addAttribute("account", account);
 
+        // Return user template for non-admin users
+        if (account.getRole() != Role.ADMIN) {
+            return "user/order/list";
+        }
+
         return "order/list";
     }
 
@@ -60,8 +64,12 @@ public class OrderController {
         Account account = (Account) session.getAttribute("account");
         Order order = orderService.findById(orderId).orElse(null);
 
+        if (order == null) {
+            return "redirect:/orders";
+        }
+
         // Check if current user is either admin or the order owner
-        boolean isAdmin = account.getRole().equals(Role.ADMIN); // or check account.getRole() == Role.ADMIN
+        boolean isAdmin = account.getRole() == Role.ADMIN || account.getRole().name().equals("ADMIN");
         boolean isOwner = order.getAccount().getId() == account.getId();
 
         if (!isAdmin && !isOwner) {
@@ -70,10 +78,16 @@ public class OrderController {
 
         Page<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId, page, 10);
         model.addAttribute("account", account);
-        model.addAttribute("order", order); // Add order to model
+        model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", orderDetails.getTotalPages());
+        
+        // Return user template for non-admin users
+        if (account.getRole() != Role.ADMIN) {
+            return "user/order/detail";
+        }
+        
         return "order/details";
     }
 

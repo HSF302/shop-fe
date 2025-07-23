@@ -53,7 +53,7 @@ private boolean isPublicPath(String path) {
             path.startsWith("/images/") ||
             path.equals("/error") ||
             path.equals("/officedresses") ||
-            path.matches("/officedresses/\\d+") ||
+            path.startsWith("/officedresses/") ||
             path.matches("/officedresses\\?.+") ||
             path.equals("/");
 }
@@ -66,14 +66,7 @@ private boolean isPublicPath(String path) {
     }
 
     public static boolean isAdminPath(String path) {
-        return path.startsWith("/admin/")
-            || path.startsWith("/accounts/list")
-            || path.startsWith("addons")
-            || path.startsWith("/categories")
-            || path.startsWith("/colors")
-            || path.startsWith("/materials")
-            || path.startsWith("/sizes")
-            || path.startsWith("/officedresses/");
+        return path.startsWith("/admin/");
     }
 
 
