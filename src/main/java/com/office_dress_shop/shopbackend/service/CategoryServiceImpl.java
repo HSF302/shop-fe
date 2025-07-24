@@ -14,6 +14,8 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository repo;
+    @Autowired
+    private OfficeDressRepository officeDressRepository;
 
     public Page<Category> searchByName(String searchTerm, int page, int size) {
         if (searchTerm == null || searchTerm.isEmpty()) {
@@ -35,6 +37,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public void deleteById(int id) {
+        List<OfficeDress> dresses = officeDressRepository.findAll();
+        for (OfficeDress dress : dresses) {
+            if (dress.getCategory() != null && dress.getCategory().getId() == id) {
+                dress.setCategory(null);
+                officeDressRepository.save(dress);
+            }
+        }
+        // Now safe to delete
         repo.deleteById(id);
+
     }
 }

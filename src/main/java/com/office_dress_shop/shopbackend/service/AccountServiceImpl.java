@@ -1,5 +1,6 @@
 package com.office_dress_shop.shopbackend.service;
 
+import com.office_dress_shop.shopbackend.enums.Role;
 import com.office_dress_shop.shopbackend.pojo.Account;
 import com.office_dress_shop.shopbackend.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class AccountServiceImpl implements AccountService{
         }
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setActived(true);
+        account.setRole(Role.ADMIN);
         repo.save(account);
         return true;
     }

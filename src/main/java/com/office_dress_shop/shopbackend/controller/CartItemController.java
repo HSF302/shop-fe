@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/cart-items")
@@ -73,8 +74,17 @@ public class CartItemController {
         double cartTotal = cartItems.stream()
                 .mapToDouble(CartItem::calculateTotalPrice)
                 .sum();
+        double shippingFee = cartTotal > 0 ? 30000 : 0; // Shipping fee 30,000 VND
+        
         model.addAttribute("account", acc);
         model.addAttribute("cartTotal", cartTotal);
+        model.addAttribute("totalAmount", cartTotal);
+        model.addAttribute("shippingFee", shippingFee);
+
+        // Return user template for non-admin users
+        if (acc.getRole() != Role.ADMIN) {
+            return "user/cart/list";
+        }
 
         return "cartitem/list";
     }
@@ -119,9 +129,25 @@ public class CartItemController {
     public String add(
             @ModelAttribute CartItem cartItem,
             @RequestParam(required = false) Integer accountId,
+            @RequestParam int productId,
+            @RequestParam int sizeId,
+            @RequestParam int colorId,
+            @RequestParam int materialId,
+            @RequestParam(required = false) List<Integer> addonIds,
             HttpSession session) {
 
         Account acc = (Account) session.getAttribute("account");
+
+        // Set related entities
+        cartItem.setProduct(officeDressService.findById(productId).orElseThrow());
+        cartItem.setSize(sizeService.findById(sizeId).orElseThrow());
+        cartItem.setColor(colorService.findById(colorId).orElseThrow());
+        cartItem.setMaterial(materialService.findById(materialId).orElseThrow());
+        if (addonIds != null && !addonIds.isEmpty()) {
+            cartItem.setAddons(addonService.findAllById(addonIds));
+        } else {
+            cartItem.setAddons(new ArrayList<>());
+        }
 
         // Determine which account's cart to use
         Account targetAccount;
@@ -230,11 +256,45 @@ public class CartItemController {
         return "redirect:/cart-items";
     }
 
+    @PostMapping("/{id}/update")
+    public String updateQuantity(@PathVariable int id, 
+                                @RequestParam int quantity, 
+                                HttpSession session) {
+        Account acc = (Account) session.getAttribute("account");
+        CartItem cartItem = cartItemService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        // Check if user owns this cart item or is admin
+        if (acc.getRole() != Role.ADMIN && cartItem.getCart().getAccount().getId() != acc.getId()) {
+            throw new RuntimeException("Access denied");
+        }
+
+        cartItem.setQuantity(quantity);
+        cartItemService.save(cartItem);
+        return "redirect:/cart-items";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteCartItem(@PathVariable int id, HttpSession session) {
+        Account acc = (Account) session.getAttribute("account");
+        CartItem cartItem = cartItemService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        // Check if user owns this cart item or is admin
+        if (acc.getRole() != Role.ADMIN && cartItem.getCart().getAccount().getId() != acc.getId()) {
+            throw new RuntimeException("Access denied");
+        }
+
+        cartItemService.deleteById(id);
+        return "redirect:/cart-items";
+    }
+
     @PostMapping("/checkout")
     public String checkout(
             @RequestParam(required = false) String shippingAddress,
+            @RequestParam(required = false) String[] quantities,
             HttpSession session,
-            RedirectAttributes redirectAttributes) {  // Changed from Model to RedirectAttributes
+            RedirectAttributes redirectAttributes) {
         Account acc = (Account) session.getAttribute("account");
 
         if (shippingAddress == null || shippingAddress.trim().isEmpty()) {
@@ -243,10 +303,28 @@ public class CartItemController {
 
         try {
             Cart cart = cartService.getOrCreateCart(acc);
+            
+            // Update quantities if provided
+            if (quantities != null && quantities.length > 0) {
+                List<CartItem> cartItems = cartItemService.findByCartId(cart.getId());
+                for (int i = 0; i < Math.min(quantities.length, cartItems.size()); i++) {
+                    try {
+                        int quantity = Integer.parseInt(quantities[i]);
+                        if (quantity > 0) {
+                            CartItem item = cartItems.get(i);
+                            item.setQuantity(quantity);
+                            cartItemService.save(item);
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore invalid quantity values
+                    }
+                }
+            }
+            
             Order order = orderDetailService.createOrderFromCart(acc, cart, shippingAddress);
             return "redirect:/orders/details/" + order.getId();
         } catch (IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());  // Using flash attribute
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cart-items";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi thanh toán");

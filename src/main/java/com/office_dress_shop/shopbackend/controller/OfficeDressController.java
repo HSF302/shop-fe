@@ -35,21 +35,25 @@ public class OfficeDressController {
     @GetMapping
     public String list(
             @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(defaultValue = "1") int page,
             Model model) {
 
         // Add search term to model for thymeleaf
         model.addAttribute("searchTerm", search);
 
-        // Get paginated results (page size 10 by default)
-        Page<OfficeDress> officeDressPage = officeDressService.searchByName(search, page, 10);
+        // Get paginated results (page size 12 for better grid layout)
+        Page<OfficeDress> officeDressPage = officeDressService.searchByName(search, page - 1, 12);
 
         // Add to model
-        model.addAttribute("dresses", officeDressPage.getContent());
+        model.addAttribute("officeDresses", officeDressPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", officeDressPage.getTotalPages());
+        model.addAttribute("categories", categoryService.findAll());
 
-        return "officedress/list";
+        return "user/officedresses/list";
     }
 
     @GetMapping("/add")
@@ -141,7 +145,7 @@ public class OfficeDressController {
         return officeDressService.findById(id)
                 .map(dress -> {
                     model.addAttribute("officeDress", dress);
-                    return "officedress/detail";
+                    return "user/officedresses/detail";
                 })
                 .orElse("redirect:/officedresses");
     }
